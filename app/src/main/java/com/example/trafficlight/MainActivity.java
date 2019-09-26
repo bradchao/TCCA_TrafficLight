@@ -42,8 +42,38 @@ public class MainActivity extends AppCompatActivity {
         }
 
         timer = new Timer();
-        timer.schedule(new LightTask(), 0, 1000);
+        timer.schedule(new InitTask(), 0, 100);
 
+    }
+
+    private class InitTask extends TimerTask {
+        @Override
+        public void run() {
+            try{
+                if (iCounter % 3 == 0){
+                    gpioGreen.setValue(true);
+                    gpioYellow.setValue(false);
+                    gpioRed.setValue(false);
+                }else if (iCounter % 3 == 1){
+                    gpioGreen.setValue(false);
+                    gpioYellow.setValue(true);
+                    gpioRed.setValue(false);
+                }else if (iCounter % 3 == 2){
+                    gpioGreen.setValue(false);
+                    gpioYellow.setValue(false);
+                    gpioRed.setValue(true);
+                }
+                iCounter++;
+                if (iCounter == 50){
+                    cancel();
+                    iCounter = 0;
+                    timer.schedule(new LightTask(), 0, 1000);
+                }
+
+            }catch (Exception e){
+                Log.v("brad", e.toString());
+            }
+        }
     }
 
     private class LightTask extends TimerTask {
